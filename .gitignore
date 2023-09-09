@@ -14,3 +14,5 @@ meshes/*.m
 cycles/*.sh
 myScripts/
 myShapes/
+mesh/
+render

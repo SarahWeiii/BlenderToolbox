@@ -3,6 +3,8 @@ sys.path.append(os.path.join(os.path.abspath(os.getcwd()))) # change this to you
 import BlenderToolBox as bt
 import os, bpy, bmesh
 import numpy as np
+import argparse
+
 cwd = os.getcwd()
 
 '''
@@ -23,21 +25,51 @@ RENDER AN IMAGE STEP-BY-STEP:
 7. run "blender --background --python template.py" again to output your final image
 '''
 
-outputPath = os.path.join(cwd, './template.png')
+out_path = './template.png'
+mesh_path = './meshes/spot.ply'
+mesh_loc_x = 1.12
+mesh_loc_y = -0.14
+mesh_loc_z = 0
+mesh_rot_x = 90
+mesh_rot_y = 0
+mesh_rot_z = 227
+mesh_scale_x = 1.0
+mesh_scale_y = 1.0
+mesh_scale_z = 1.0
+
+if len(sys.argv) > 4:
+    out_path = sys.argv[4]
+if len(sys.argv) > 5:
+    mesh_path = sys.argv[5]
+if len(sys.argv) > 8:
+    mesh_loc_x = float(sys.argv[6])
+    mesh_loc_y = float(sys.argv[7])
+    mesh_loc_z = float(sys.argv[8])
+if len(sys.argv) > 11:
+    mesh_rot_x = float(sys.argv[9])
+    mesh_rot_y = float(sys.argv[10])
+    mesh_rot_z = float(sys.argv[11])
+if len(sys.argv) > 14:
+    mesh_scale_x = float(sys.argv[12])
+    mesh_scale_y = float(sys.argv[13])
+    mesh_scale_z = float(sys.argv[14])
+
+
+outputPath = os.path.join(cwd, out_path)
 
 ## initialize blender
-imgRes_x = 720 # recommend > 1080 
-imgRes_y = 720 # recommend > 1080 
+imgRes_x = 1080 # recommend > 1080 
+imgRes_y = 1080 # recommend > 1080 
 numSamples = 100 # recommend > 200
 exposure = 1.5 
 use_GPU = True
 bt.blenderInit(imgRes_x, imgRes_y, numSamples, exposure, use_GPU)
 
 ## read mesh
-meshPath = './meshes/spot.ply'
-location = (1.12, -0.14, 0) # (GUI: click mesh > Transform > Location)
-rotation = (90, 0, 227) # (GUI: click mesh > Transform > Rotation)
-scale = (1.5,1.5,1.5) # (GUI: click mesh > Transform > Scale)
+meshPath = mesh_path
+location = (mesh_loc_x, mesh_loc_y, mesh_loc_z) # (GUI: click mesh > Transform > Location)
+rotation = (mesh_rot_x, mesh_rot_y, mesh_rot_z) # (GUI: click mesh > Transform > Rotation)
+scale = (mesh_scale_x, mesh_scale_y, mesh_scale_z) # (GUI: click mesh > Transform > Scale)
 mesh = bt.readMesh(meshPath, location, rotation, scale)
 
 ## set shading (uncomment one of them)
@@ -52,7 +84,7 @@ bt.subdivision(mesh, level = 1)
 ## Set your material here (see other demo scripts)
 
 # bt.colorObj(RGBA, Hue, Saturation, Value, Bright, Contrast)
-RGBA = (144.0/255, 210.0/255, 236.0/255, 1)
+RGBA = (239.0/255, 239.0/255, 240.0/255, 1)
 meshColor = bt.colorObj(RGBA, 0.5, 1.0, 1.0, 0.0, 2.0)
 bt.setMat_plastic(mesh, meshColor)
 
